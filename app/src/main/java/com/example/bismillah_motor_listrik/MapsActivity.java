@@ -76,6 +76,8 @@ import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -162,7 +164,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     String key_device, key_mBuffer, key_mDevice;
 
     private ProgressDialog progressDialog;
+//    count up time
+    TextView timerText;
 
+    Timer timer;
+    TimerTask timerTask;
+
+    Double times = 0.0;
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,6 +226,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setCredit();
         }
 
+//        count time
+        timerText = findViewById(R.id.timerText);
+        startTimer();
+//        end count up time
+
         java.util.Date noteTS = Calendar.getInstance().getTime();
 
         String time = "hh:mm%"; // 12:00
@@ -246,7 +259,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonpopup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+//                count up time
+                timerTask.cancel();
                 // create a Dialog component
                 final Dialog dialog = new Dialog(context);
 
@@ -288,6 +302,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
+                        startTimer();
                         Resume();
                         motorOn();
 
@@ -395,6 +410,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void Off() {
         onStop();
         stop();
+        timerTask.cancel();
+        times = 0.0;
+        timerText.setText(formatTime(0,0,0));
 //        Chronometer simpleChronometer = (Chronometer) findViewById(R.id.simpleChronometer); // initiate a chronometer
 //
 //        simpleChronometer.start(); // start a chronometer
@@ -1394,7 +1412,52 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onSaveInstanceState(outState);
     }
 
+    private void startTimer()
+    {
+        timerTask = new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        times++;
+                        timerText.setText(getTimerText());
+                    }
+                });
+            }
 
+        };
+        timer.scheduleAtFixedRate(timerTask, 0 ,1000);
+    }
+
+    private String getTimerText()
+    {
+        int rounded = (int) Math.round(times);
+
+        int seconds = ((rounded % 86400) % 3600) % 60;
+        int minutes = ((rounded % 86400) % 3600) / 60;
+        int hours = ((rounded % 86400) / 3600);
+
+        return formatTime(seconds, minutes, hours);
+    }
+
+    private String formatTime(int seconds, int minutes, int hours)
+    {
+        return String.format("%02d",hours) + " : " + String.format("%02d",minutes) + " : " + String.format("%02d",seconds);
+    }
+
+    private void percobaan() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(getApplicationContext(), Scanner.class));
+            }
+        }, 5000);
+    }
 
 
 
