@@ -98,7 +98,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Runnable runnable1, runnable2, runnable3;
     private String KEY_NAME = "NAMA";
     Dialog myDialog;
-    private Button buttonpopup;
+    private Button buttonpopupstnby, buttonPopUpOff;
     private View decorView;
     private GoogleMap mMap;
     private Geocoder geocoder;
@@ -245,6 +245,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         btn_off = findViewById(R.id.btn_off);
+        buttonPopUpOff = findViewById(R.id.btn_off);
 
         decorView = getWindow() .getDecorView();
         decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
@@ -255,8 +256,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        buttonpopup = (Button) findViewById(R.id.btn_stnby);
-        buttonpopup.setOnClickListener(new View.OnClickListener() {
+        buttonpopupstnby = (Button) findViewById(R.id.btn_stnby);
+        buttonpopupstnby.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                count up time
