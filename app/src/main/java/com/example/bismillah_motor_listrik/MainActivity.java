@@ -325,7 +325,7 @@ public class MainActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "Tidak Bisa Terkoneksi Dengan Motor. Silahkan Pastikan Motor Online!", Toast.LENGTH_LONG).show();
                 finish();
             } else {
-                msg("Terkoneksi Ke Motor");
+                msg("Connected to device");
                 mIsBluetoothConnected = true;
                 mReadThread = new ReadInput(); // Kick off input reader
             }
