@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -18,6 +19,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -161,6 +163,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     TextView textViewTime, saldo;
 
+    String billing_off, jarak_off;
     String key_device, key_mBuffer, key_mDevice;
 
     private ProgressDialog progressDialog;
@@ -171,6 +174,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     TimerTask timerTask;
 
     Double times = 0.0;
+
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -462,7 +466,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent i = new Intent(MapsActivity.this, MainActivity.class);
+                Intent i = new Intent(MapsActivity.this, Off.class);
+                i.putExtra(billing_off, tagihan.getText().toString());
+                i.putExtra(jarak_off, jarak.getText().toString());
                 startActivity(i);
             }
         }, 2000);
@@ -753,11 +759,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btn_off.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handler.removeCallbacks(runnable3);
-                Off();
-                habis();
-                motorOff();
-                return;
+                AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+
+                builder.setCancelable(true);
+                builder.setTitle("this IS Name");
+                builder.setMessage("this IS Message");
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        builder.show();
+                        handler.removeCallbacks(runnable3);
+                        Off();
+                        habis();
+                        motorOff();
+                        return;
+
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+
+                    }
+                });
             }
         });
 
