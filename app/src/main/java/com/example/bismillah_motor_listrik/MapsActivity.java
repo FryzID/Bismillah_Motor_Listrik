@@ -28,9 +28,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -76,7 +78,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
+import java.util.Formatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -90,8 +94,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener,
         GoogleMap.OnMapClickListener {
+
+    TextView tv_speed;
 
     TextView tagihan, jarak, kacau;
     String id, crd;
@@ -231,7 +237,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
 //        count time
-        timerText = findViewById(R.id.timerText);
+//        timerText = findViewById(R.id.timerText);
         startTimer();
 //        end count up time
 
@@ -379,6 +385,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        Chronometer simpleChronometer = (Chronometer) findViewById(R.id.simpleChronometer); // initiate a chronometer
 
 //        simpleChronometer.start(); // start a chronometer
+
+        tv_speed = findViewById(R.id.tv_speed);
+
+        //CHECK FOR PERMISSION
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions (new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1000);
+        } else {
+            //START THE PROGRAM IF GRANTED
+            doStuff();
+        }
+
+        this.updateSpeed(null);
+
+
 
 
 
@@ -977,12 +998,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @SuppressLint("MissingSuperCall")
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == ACCESS_LOCATION_REQUEST_CODE) {
+        if (requestCode == 1000) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 enableUserLocation();
                 zoomToUserLocation();
+                doStuff();
             } else {
                 //Showing Dialog That permission is not granted...
+                finish();
             }
         }
     }
@@ -992,6 +1015,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     }
+
 
     /**
      * Called when the user touches the button
@@ -1486,7 +1510,57 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }, 5000);
     }
 
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        if (location != null){
+            CLocation myLocation = new CLocation(location);
+            this.updateSpeed(myLocation);
+        }
+    }
 
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        LocationListener.super.onStatusChanged(provider, status, extras);
+    }
 
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+        LocationListener.super.onProviderEnabled(provider);
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+        LocationListener.super.onProviderDisabled(provider);
+    }
+
+    @SuppressLint("MissingPermission")
+    private void doStuff (){
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager != null){
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        }
+        Toast.makeText(this, "Waiting for GPS connection!", Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void updateSpeed(CLocation location) {
+        float nCurrentSpeed = 0;
+
+        if (location!= null){
+//            location.setUserMetricUnits();
+            nCurrentSpeed = location.getSpeed();
+        }
+
+        Formatter fmt = new Formatter(new StringBuilder());
+        fmt.format(Locale.UK,"%5.1f", nCurrentSpeed);
+        String strCurrentSpeed = fmt.toString();
+        strCurrentSpeed = strCurrentSpeed.replace("", "0");
+
+        tv_speed.setText(strCurrentSpeed + "km/h");
+    }
+
+//    private boolean useMetricUnits() {
+//        return false;
+//    }
 
 }
