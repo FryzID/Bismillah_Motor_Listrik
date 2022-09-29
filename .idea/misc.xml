@@ -16,10 +16,9 @@
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/Bismillah_Motor_Listrik231/app/src/main/res/drawable/ic_outline_battery_charging_full_24.xml" value="0.1" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/Bismillah_Motor_Listrik231/app/src/main/res/drawable/line.xml" value="0.1" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/Bismillah_Motor_Listrik231/app/src/main/res/layout/activity_bluetooth_fragment.xml" value="0.1" />
-        <entry key="..\:/Users/ASUS/AndroidStudioProjects/Bismillah_Motor_Listrik231/app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="..\:/Users/ASUS/AndroidStudioProjects/Bismillah_Motor_Listrik231/app/src/main/res/layout/activity_maps.xml" value="0.176" />
-        <entry key="..\:/Users/ASUS/AndroidStudioProjects/Bismillah_Motor_Listrik231/app/src/main/res/layout/activity_off.xml" value="0.1" />
-        <entry key="..\:/Users/ASUS/AndroidStudioProjects/Bismillah_Motor_Listrik231/app/src/main/res/layout/activity_scanner.xml" value="0.1" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/Bismillah_Motor_Listrik231/app/src/main/res/layout/activity_main.xml" value="0.4" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/Bismillah_Motor_Listrik231/app/src/main/res/layout/activity_maps.xml" value="0.1" />
+        <entry key="..\:/Users/ASUS/AndroidStudioProjects/Bismillah_Motor_Listrik231/app/src/main/res/layout/activity_scanner.xml" value="0.176" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/Bismillah_Motor_Listrik231/app/src/main/res/layout/activity_splash_screen.xml" value="0.1" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/Bismillah_Motor_Listrik231/app/src/main/res/layout/activity_standbypopupp.xml" value="0.1" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/Bismillah_Motor_Listrik231/app/src/main/res/layout/activity_tampilan.xml" value="0.20854700854700856" />
@@ -36,6 +35,7 @@
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/bismillah_motor_listrik/app/src/main/res/layout/activity_main.xml" value="0.11302083333333333" />
         <entry key="..\:/Users/ASUS/AndroidStudioProjects/bismillah_motor_listrik/app/src/main/res/layout/activity_maps.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/LKS Web Technology/AndroidStudioProjects/Bismillah_Motor_Listrik/app/src/main/res/layout/activity_scanner.xml" value="0.1778115501519757" />
+        <entry key="..\:/Users/LKS Web Technology/AndroidStudioProjects/Bismillah_Motor_Listrik3/app/src/main/res/layout/activity_maps.xml" value="0.33" />
       </map>
     </option>
   </component>
