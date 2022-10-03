@@ -54,6 +54,9 @@ dependencies {
 
     //BLUETOOTH
     implementation 'com.github.harry1453:android-bluetooth-serial:v1.1'
+    implementation 'com.google.guava:guava:24.1-jre'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.5' //Add this line
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
     // RxJava is also required.
     implementation 'io.reactivex.rxjava2:rxjava:2.2.15'

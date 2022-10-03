@@ -19,7 +19,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.49">
+
+
+
 
     </LinearLayout>
 
@@ -41,6 +45,7 @@
     </TextView>
 
     <Button
+        android:id="@+id/end"
         android:layout_width="300dp"
         android:layout_height="40dp"
         android:background="@drawable/buttonkuning"
@@ -67,7 +72,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.700"
         android:orientation="horizontal">
-
+        <TextView
+            android:id="@+id/jarak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="jarak" />
     </LinearLayout>
 
     <LinearLayout
@@ -81,7 +91,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.700"
         android:orientation="horizontal">
-
+        <TextView
+            android:id="@+id/tagihan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="tagihan" />
     </LinearLayout>
 
 

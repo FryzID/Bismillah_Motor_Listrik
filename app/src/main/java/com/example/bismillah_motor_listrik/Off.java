@@ -3,6 +3,8 @@ package com.example.bismillah_motor_listrik;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +13,7 @@ public class Off extends AppCompatActivity {
 
     String billing_off, jarak_off;
     TextView billing, jarak;
-
+    Button end;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +30,15 @@ public class Off extends AppCompatActivity {
         jarak.setText(jarak_off);
 
         goMain();
+        end = findViewById(R.id.end);
+        end.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Off.this, MainActivity.class);
+                startActivity(i);
+            }
+        });
+
     }
 
     private void goMain() {
