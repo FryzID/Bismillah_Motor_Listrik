@@ -23,8 +23,8 @@ public class Off extends AppCompatActivity {
         jarak = findViewById(R.id.jarak);
 
         Bundle extras = getIntent().getExtras();
-        billing_off = extras.getString(billing_off);
-        jarak_off = extras.getString(jarak_off);
+        billing_off = extras.getString("billing_off");
+        jarak_off = extras.getString("jarak_off");
 
         billing.setText(billing_off);
         jarak.setText(jarak_off);
@@ -34,7 +34,7 @@ public class Off extends AppCompatActivity {
         end.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Off.this, MainActivity.class);
+                Intent i = new Intent(Off.this, BluetoothFragment.class);
                 startActivity(i);
             }
         });

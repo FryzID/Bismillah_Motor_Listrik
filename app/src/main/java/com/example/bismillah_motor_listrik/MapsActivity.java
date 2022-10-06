@@ -87,6 +87,7 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -104,11 +105,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleMap.OnMapClickListener {
 
     TextView tv_speed;
-
+    String kecepatan_realtime, jarak_realtime, battery_realtime, motor_id;
     TextView tagihan, jarak, kacau;
     String id, crd;
     Integer nilai, nl, tampil;
-    Handler handler1, handler2;
+    Handler handler1, handler3;
     Runnable runnable1, runnable2, runnable3;
     private String KEY_NAME = "NAMA";
     Dialog myDialog;
@@ -174,13 +175,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int level;
 
     TextView textViewTime, saldo;
-
-    String billing_off, jarak_off;
     String key_device, key_mBuffer, key_mDevice;
 
     private ProgressDialog progressDialog;
 //    count up time
-    TextView timerText, mTxtReceive;
+    TextView timerText, mTxtReceive, battery;
 
     Timer timer;
     TimerTask timerTask;
@@ -188,6 +187,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Double times = 0.0;
     private InputStream inputStream;
 
+//    alert
+    Handler handler_alert, handler_alert2;
+    Runnable runnable_alert, runnable_alert2;
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,7 +221,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         geocoder = new Geocoder(this);
 
-        TextView battery = (TextView) findViewById(R.id.baterry);
+        battery = (TextView) findViewById(R.id.baterry);
 
 //        Credit
         tagihan = findViewById(R.id.tagihan);
@@ -227,22 +229,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        ambil id
         Bundle extras = getIntent().getExtras();
         id = extras.getString(KEY_NAME);
-        key_device = extras.getString(key_device);
-        key_mDevice = extras.getString(key_mDevice);
-        key_mBuffer = extras.getString(key_mBuffer);
-        saldo = findViewById(R.id.saldo);
+
+        try {
+            key_device = extras.getString(key_device);
+            key_mDevice = extras.getString(key_mDevice);
+            key_mBuffer = extras.getString(key_mBuffer);
+            saldo = findViewById(R.id.saldo);
+        } catch (Exception e) {
+            motorOff();
+            Off();
+            habis();
+        }
 
         saldo.setText(key_device);
-
-
+//      definisikan nilai
+//        kecepatan_realtime = "0";
+//        jarak_realtime = "0";
+//        battery_realtime = "0";
+//        motor_id = "0";
 //        Function billing
         credit();
 //        loopCredit();
-
-        nl = 10;
+//        jarak.setText(jarak_realtime);
+//        nl = 10;
         tampil = 1;
         if (tampil != 0) {
-            jarak();
             setCredit();
         }
 
@@ -252,10 +263,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startTimer();
 //        end count up time
 
-        java.util.Date noteTS = Calendar.getInstance().getTime();
-
-        String time = "hh:mm%"; // 12:00
-        battery.setText(DateFormat.format(time, noteTS));
+//        java.util.Date noteTS = Calendar.getInstance().getTime();
+//
+//        String time = "hh:mm%"; // 12:00
+//        battery.setText(DateFormat.format(time, noteTS));
 
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -335,13 +346,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-//            @Override
-//            public void onClick(View view) {
-//                openstandbypopup();
-//            }
-//        });
-
-
         btAdapter = BluetoothAdapter.getDefaultAdapter();
 
         // Register for broadcasts when a device is discovered.
@@ -361,72 +365,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         this.registerReceiver(this.mBatInfoReceive, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
 
-//        btn_off.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-////                Handler handler = new Handler();
-////                handler.removeCallbacks(runnable1);
-////                handler.removeCallbacks(runnable2);
-////                handler.removeCallbacks(runnable3);
-//                Off();
-//                habis();
-//                return;
-//            }
-//        });
-
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Standby();
-//
-//            }
-//        });
-
-//        btn_resume.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                Resume();
-//            }
-//        });
-
         textViewTime = (TextView)findViewById(R.id.countdown);
 
-//        Chronometer simpleChronometer = (Chronometer) findViewById(R.id.simpleChronometer); // initiate a chronometer
-
-//        simpleChronometer.start(); // start a chronometer
-
         tv_speed = findViewById(R.id.tv_speed);
-
-        //CHECK FOR PERMISSION
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-//        != PackageManager.PERMISSION_GRANTED) {
-//            requestPermissions (new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1000);
-//        } else {
-            //START THE PROGRAM IF GRANTED
-//            doStuff();
-//        }
-
-//        this.updateSpeed(null);
-
-
-
-
-
     }
 
 
     private void Standby() {
-//        btn_resume.setVisibility(View.VISIBLE);
-//        btn.setVisibility(View.INVISIBLE);
-//        btn_off.setVisibility(View.VISIBLE);
         handler1.removeCallbacks(runnable1);
-        handler2.removeCallbacks(runnable2);
-
-//        Chronometer simpleChronometer = (Chronometer) findViewById(R.id.simpleChronometer); // initiate a chronometer
-
-//        simpleChronometer.stop(); // start a chronometer
 
         onStop();
     }
@@ -436,7 +382,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        btn.setVisibility(View.VISIBLE);
 //        btn_resume.setVisibility(View.INVISIBLE);
         if (tampil != 0) {
-            jarak();
             setCredit();
         }
         onStart();
@@ -445,6 +390,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void Off() {
+        handler1.removeCallbacks(runnable1);
+        handler3.removeCallbacks(runnable3);
+//        handler_alert.removeCallbacks(runnable_alert);
+//        handler_alert2.removeCallbacks(runnable_alert2);
         onStop();
         stop();
         timerTask.cancel();
@@ -471,7 +420,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         InterfaceAPI api = retrofit.create(InterfaceAPI.class);
 
-        Update put = new Update(tgh);
+        Update put = new Update(tgh, "1", "1");
 
         Call<Respon> call = api.putCredit(id, put);
 
@@ -498,8 +447,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void run() {
                 Intent i = new Intent(MapsActivity.this, Off.class);
-                i.putExtra(billing_off, tagihan.getText().toString());
-                i.putExtra(jarak_off, jarak.getText().toString());
+                i.putExtra("billing_off", tagihan.getText().toString());
+                i.putExtra("jarak_off", jarak.getText().toString());
                 startActivity(i);
             }
         }, 2000);
@@ -509,23 +458,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         handler1 = new Handler();
         runnable1 = new Runnable() {
             public void run() {
-                nilai = (nl / 10) * 1000;
-                int trans = Integer.parseInt(crd);
-                tampil = trans - nilai;
-                if (tampil <= 10000) {
-                    Toast.makeText(MapsActivity.this, "Billing Tersisa 10.0000", Toast.LENGTH_SHORT).show();
+                try {
+                    String jarak1 = jarak.getText().toString();
+                    Toast.makeText(MapsActivity.this, jarak_realtime, Toast.LENGTH_SHORT).show();
+                    int nl = Integer.parseInt(jarak1);
+                    nilai = (nl / 10) * 1000;
+                    int trans = Integer.parseInt(crd);
+                    tampil = trans - nilai;
+                    if (tampil <= 10000) {
+                        Toast.makeText(MapsActivity.this, "Billing Tersisa 10.0000", Toast.LENGTH_SHORT).show();
+                    }
+
+                    tagihan.setText(tampil.toString());
+                    if (tampil <= 0) {
+                        Toast.makeText(MapsActivity.this, "Billing Telah Habis", Toast.LENGTH_SHORT).show();
+                        habis();
+                        return;
+                    }
+                    setCredit();
+                }catch (Exception e) {
+                    Toast.makeText(MapsActivity.this, "gagal", Toast.LENGTH_SHORT).show();
+                    setCredit();
                 }
 
-                tagihan.setText(tampil.toString());
-                if (tampil == 0) {
-                    Toast.makeText(MapsActivity.this, "Billing Telah Habis", Toast.LENGTH_SHORT).show();
-                    habis();
-                    return;
-                }
-                setCredit();
             }
         };
-        handler1.postDelayed(runnable1, 10000);
+        handler1.postDelayed(runnable1, 15000);
 
 //        stop_Standby.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -535,16 +493,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        });
     }
 
-    private void jarak() {
-        handler2 = new Handler();
-        runnable2 = new Runnable() {
-            public void run() {
-                nl++;
-                jarak.setText(nl.toString());
-                jarak();
-            }
-        };
-        handler2.postDelayed(runnable2, 1000);
+//    private void jarak() {
+//        handler2 = new Handler();
+//        runnable2 = new Runnable() {
+//            public void run() {
+//                nl++;
+//                jarak.setText(nl.toString());
+//                jarak();
+//            }
+//        };
+//        handler2.postDelayed(runnable2, 1000);
 //        stop_Standby.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -560,7 +518,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                jarak();
 //            }
 //        }, 1000);
-    }
+//    }
 
     private void credit() {
         Gson gson = new GsonBuilder().setLenient().create();
@@ -651,6 +609,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //TODO Create a BroadcastReceiver for ACTION_FOUND.
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
+
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Discovery has found a device. Get the BluetoothDevice
@@ -665,8 +624,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(receiver);
+        // Don't forget to unregister the ACTION_FOUND receiver.
+
     }
 
 
@@ -777,15 +737,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void loopRealtime() {
-        Handler handler = new Handler();
-        Runnable runnable3 = new Runnable() {
+        handler3 = new Handler();
+        runnable3 = new Runnable() {
             public void run() {
                 realtime();
                 loopRealtime();
 //                BatteryTrigger();
             }
         };
-        handler.postDelayed(runnable3, 10000);
+        handler3.postDelayed(runnable3, 15000);
         btn_off.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -867,8 +827,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        double latitude = location.getLatitude();
 //        String string_latlng = center.toString();
 
-        String longitude = String.valueOf(location.getLongitude());
-        String latitude = String.valueOf(location.getLatitude());
 
         Gson gson = new GsonBuilder().setLenient().create();
 
@@ -880,8 +838,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .client(client)
                 .build();
 
-        String battery = "100";
-        String jarak = "1000";
+        String btr = battery.getText().toString();
+        String battery = btr;
+        String jrk = jarak.getText().toString();
+        String jarak =  jrk;
+        String longitude = String.valueOf(location.getLongitude());
+        String latitude = String.valueOf(location.getLatitude());
+
 //        String latitude = "7.8652";
 //        String longitude = "-73.9987";
 //        String latitude = Location.convert(location.getLatitude(), Location.FORMAT_SECONDS);
@@ -889,17 +852,81 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         InterfaceAPI api = retrofit.create(InterfaceAPI.class);
 
-        Motor realtime = new Motor(battery, jarak, latitude, longitude);
+        Motor realtime = new Motor(battery, jarak, latitude, longitude, id);
 
-        Call<PostMotor> call = api.putMotor("1", realtime);
+        Call<PostMotor> call = api.putMotor(motor_id, realtime);
 
         call.enqueue(new Callback<PostMotor>() {
             @Override
             public void onResponse(Call<PostMotor> call, Response<PostMotor> response) {
-                if (!response.isSuccessful()) {
-                    return;
-                }
-                Toast.makeText(MapsActivity.this, "Berhasil", Toast.LENGTH_SHORT).show();
+//                try {
+                    if (!response.isSuccessful()) {
+                        motorOff();
+                        Off();
+                        habis();
+                        return;
+                    }
+                    Toast.makeText(MapsActivity.this, "Berhasil", Toast.LENGTH_SHORT).show();
+
+//                    String rg = response.body().getRange().toString();
+//                    String btr = response.body().getBattery().toString();
+//                    String id_off = response.body().getOff().toString();
+//                    int trans = Integer.parseInt(rg);
+//                    int btr1 = Integer.parseInt(btr);
+//                    int off1 = Integer.parseInt(id_off);
+
+//                    if (off1 == 1) {
+//                        motorOff();
+//                        Off();
+//                        habis();
+//                        return;
+//                    }
+
+//                    if (btr1 == 2) {
+//                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(MapsActivity.this);
+//
+//                        builder.setCancelable(true);
+//                        builder.setTitle("Perhatian !!");
+//                        builder.setMessage("Battery Motor Tersisa kurang dari 50 persen");
+//
+//                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                dialogInterface.cancel();
+//                            }
+//                        });
+//
+//                        builder.show();
+//
+//                    } else if(btr1 == 1) {
+//                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(MapsActivity.this);
+//
+//                        builder.setCancelable(true);
+//                        builder.setTitle("Perhatian !!");
+//                        builder.setMessage("Battery Motor Hampir Habis, Mohon Kembali Ke post terdekat");
+//
+//                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                dialogInterface.cancel();
+//                            }
+//                        });
+//
+//                        builder.show();
+//                    }
+//
+//                    if(trans == 1) {
+//                        alert();
+//                        alert2();
+//                    } else {
+//                        handler_alert.removeCallbacks(runnable_alert);
+//                        handler_alert2.removeCallbacks(runnable_alert2);
+//                    }
+//                } catch (Exception e) {
+//                    Toast.makeText(MapsActivity.this, "gagal realtime", Toast.LENGTH_SHORT).show();
+//                }
+
+
             }
 
             @Override
@@ -908,6 +935,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
+
+//    alert
+private void  alert2() {
+    handler_alert2 = new Handler();
+    runnable_alert2 = new Runnable() {
+        public void run() {
+            alert();
+            alert2();
+        }
+    };
+    handler_alert2.postDelayed(runnable_alert2, 5000);
+}
+
+    private void alert() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(MapsActivity.this);
+
+        builder.setCancelable(true);
+        builder.setTitle("Perhatian !!");
+        builder.setMessage("Mohon Kembali Ke Zona Yang Ada");
+
+        handler_alert = new Handler();
+        runnable_alert = new Runnable() {
+            public void run() {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        };
+        handler_alert.postDelayed(runnable_alert, 20000);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        builder.show();
+    }
+//    end alert
 
     private void setUserLocationMarker(Location location) {
 
@@ -918,7 +981,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //Create New Marker
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.dasd));
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.motor_01));
             markerOptions.rotation(location.getBearing());
             markerOptions.anchor((float) 0.5, (float) 0.5);
             userLocationMarker = mMap.addMarker(markerOptions);
@@ -937,8 +1000,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             CircleOptions circleOptions = new CircleOptions();
             circleOptions.center(latLng);
             circleOptions.strokeWidth(4);
-            circleOptions.strokeColor(Color.argb(255, 255, 0, 0));
-            circleOptions.fillColor(Color.argb(255, 255, 0, 0));
+            circleOptions.strokeColor(Color.argb(0, 0, 0, 0));
+            circleOptions.fillColor(Color.argb(0, 0, 0, 0));
             circleOptions.radius(location.getAccuracy());
             userLocationAccuracyCircle = mMap.addCircle(circleOptions);
         } else {
@@ -1193,13 +1256,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         public void onReceive(Context context, Intent intent) {
 
 
-            TextView battery = (TextView) findViewById(R.id.baterry);
+//            TextView battery = (TextView) findViewById(R.id.baterry);
             int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
 
             String str = new String(String.valueOf(level));
 
             int batu = Integer.parseInt(str);
-            battery.setText(str);
+//            battery.setText(str);
 
             if (batu <= 50) {
                 chargePhone();
@@ -1291,7 +1354,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // writing the specified byte to the output stream
         try {
-            String sendtxt = "0";
+            String sendtxt = "1";
             mBTSocket.getOutputStream().write(sendtxt.getBytes());
 
         } catch (IOException e) {
@@ -1319,7 +1382,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // writing the specified byte to the output stream
         try {
-            String sendtxt = "1";
+            String sendtxt = "0";
             mBTSocket.getOutputStream().write(sendtxt.getBytes());
 
         } catch (IOException e) {
@@ -1410,35 +1473,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             try {
                 inputStream = mBTSocket.getInputStream();
 
-                int jarak;
+//                int jarak;
                 while (!bStop) {
-                    byte[] buffer = new byte[256];
+                    byte[] buffer = new byte[1024];
                     if (inputStream.available() > 0) {
                         inputStream.read(buffer);
                         int i = 0;
+                        String dataRead= new String(buffer,"UTF-8");
 
-                        /*
-                         * This is needed because new String(buffer) is taking the entire buffer i.e. 256 chars on Android 2.3.4 http://stackoverflow.com/a/8843462/1287554
-                         */
-                        for (i = 0; i < buffer.length && buffer[i] != 0; i++) {
-                        }
-                        final String strInput = new String(buffer, 0, i);
+                        StringTokenizer tokens = new StringTokenizer(dataRead, " ;");
+                        tokens.countTokens();
+                        String first = tokens.nextToken();      // this will contain Kecepatan
+                        String second = tokens.nextToken();     // this will contain Jarak
+                        String third = tokens.nextToken();      // this will contain Battery
+                        String fourth = tokens.nextToken();      // this will contain Suhu
+                        String five = tokens.nextToken();      // this will contain ID MOTOR
 
-                        /*
-                         * If checked then receive text, better design would probably be to stop thread if unchecked and free resources, but this is a quick fix
-                         */
-                        mTxtReceive.post(new Runnable() {
+                        kecepatan_realtime = String.valueOf(first);
+                        jarak_realtime = String.valueOf(second);
+                        battery_realtime = String.valueOf(third);
+                        String separatebytes4 = String.valueOf(fourth);
+                        motor_id = String.valueOf(five);
+
+                        TextView speed = (TextView) findViewById(R.id.tv_speed);
+                        TextView jarak = (TextView) findViewById(R.id.jarak);
+                        TextView battery = (TextView) findViewById(R.id.baterry);
+                        TextView suhu = (TextView) findViewById(R.id.suhu);
+                        System.err.println(dataRead);
+                        runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                mTxtReceive.append(strInput);
+                                //This code needs to be posted back to the main thread.
+                                speed.setText(kecepatan_realtime);
+                                jarak.setText(jarak_realtime);
+                                battery.setText(battery_realtime);
+                                suhu.setText(separatebytes4);
 
-                                int txtLength = mTxtReceive.getEditableText().length();
-                                if(txtLength > mMaxChars){
-                                    mTxtReceive.getEditableText().delete(0, txtLength - mMaxChars);
-                                }
+
                             }
                         });
-
 
 
                     }
@@ -1560,60 +1633,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         return String.format("%02d",hours) + " : " + String.format("%02d",minutes) + " : " + String.format("%02d",seconds);
     }
-
-
-//    @Override
-//    public void onLocationChanged(@NonNull Location location) {
-//        if (location != null){
-//            CLocation myLocation = new CLocation(location);
-//            this.updateSpeed(myLocation);
-//        }
-//    }
-//
-//    @Override
-//    public void onStatusChanged(String provider, int status, Bundle extras) {
-//        LocationListener.super.onStatusChanged(provider, status, extras);
-//    }
-//
-//    @Override
-//    public void onProviderEnabled(@NonNull String provider) {
-//        LocationListener.super.onProviderEnabled(provider);
-//    }
-//
-//    @Override
-//    public void onProviderDisabled(@NonNull String provider) {
-//        LocationListener.super.onProviderDisabled(provider);
-//    }
-//
-//    @SuppressLint("MissingPermission")
-//    private void doStuff (){
-//        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-//        if (locationManager != null){
-//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-//        }
-//        Toast.makeText(this, "Waiting for GPS connection!", Toast.LENGTH_SHORT).show();
-//
-//    }
-//
-//    private void updateSpeed(CLocation location) {
-//        float nCurrentSpeed = 0;
-//
-//        if (location!= null){
-////            location.setUserMetricUnits();
-//            nCurrentSpeed = location.getSpeed();
-//        }
-//
-//        Formatter fmt = new Formatter(new StringBuilder());
-//        fmt.format(Locale.UK,"%5.1f", nCurrentSpeed);
-//        String strCurrentSpeed = fmt.toString();
-//        strCurrentSpeed = strCurrentSpeed.replace("", "0");
-//
-//        tv_speed.setText(strCurrentSpeed + "km/h");
-//    }
-
-//    private boolean useMetricUnits() {
-//        return false;
-//    }
 
     public void manageConnectedSocket(BluetoothSocket socket) {
         try {

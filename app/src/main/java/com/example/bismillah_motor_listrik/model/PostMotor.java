@@ -10,9 +10,18 @@ public class PostMotor {
     @SerializedName("success")
     @Expose
     private Boolean success;
+    @SerializedName("range")
+    @Expose
+    private Integer range;
     @SerializedName("data")
     @Expose
     private dataMotor data;
+    @SerializedName("battery")
+    @Expose
+    private Integer battery;
+    @SerializedName("off")
+    @Expose
+    private Integer off;
 
     public String getMessage() {
         return message;
@@ -30,11 +39,35 @@ public class PostMotor {
         this.success = success;
     }
 
+    public Integer getRange() {
+        return range;
+    }
+
+    public void setRange(Integer range) {
+        this.range = range;
+    }
+
     public dataMotor getData() {
         return data;
     }
 
     public void setData(dataMotor data) {
         this.data = data;
+    }
+
+    public Integer getBattery() {
+        return battery;
+    }
+
+    public void setBattery(Integer battery) {
+        this.battery = battery;
+    }
+
+    public Integer getOff() {
+        return off;
+    }
+
+    public void setOff(Integer off) {
+        this.off = off;
     }
 }

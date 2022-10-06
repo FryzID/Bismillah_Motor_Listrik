@@ -195,7 +195,6 @@ public class Scanner extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 Intent i = new Intent(Scanner.this, MainActivity.class);
-
                 startActivity(i);
             }
         });
@@ -214,7 +213,7 @@ public class Scanner extends AppCompatActivity {
 
         InterfaceAPI api = retrofit.create(InterfaceAPI.class);
 
-        Call<Login> call = api.loginScanner(username, "1");
+        Call<Login> call = api.loginScanner(username);
 
         call.enqueue(new Callback<Login>() {
             @Override
