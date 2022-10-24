@@ -890,6 +890,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String battery = btr;
         String jrk = jarak.getText().toString();
         String jarak =  jrk;
+
         String longitude = String.valueOf(location.getLongitude());
         String latitude = String.valueOf(location.getLatitude());
 

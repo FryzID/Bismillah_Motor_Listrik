@@ -123,12 +123,18 @@ public class BluetoothFragment extends AppCompatActivity {
 
             @Override
             public void onClick(View arg0) {
-                BluetoothDevice device = ((MyAdapter) (listView.getAdapter())).getSelectedItem();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra(DEVICE_EXTRA, device);
-                intent.putExtra(DEVICE_UUID, mDeviceUUID.toString());
-                intent.putExtra(BUFFER_SIZE, mBufferSize);
-                startActivity(intent);
+
+                if (mBTAdapter == null) {
+                    Toast.makeText(BluetoothFragment.this, "Silahkan Pilih Motor...", Toast.LENGTH_SHORT).show();
+                } else {
+                    BluetoothDevice device = ((MyAdapter) (listView.getAdapter())).getSelectedItem();
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.putExtra(DEVICE_EXTRA, device);
+                    intent.putExtra(DEVICE_UUID, mDeviceUUID.toString());
+                    intent.putExtra(BUFFER_SIZE, mBufferSize);
+                    startActivity(intent);
+                }
+
             }
         });
 
