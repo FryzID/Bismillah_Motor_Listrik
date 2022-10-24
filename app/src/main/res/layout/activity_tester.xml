@@ -1,414 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/ilusmap"
-        android:layout_marginTop="-10dp"
-        android:layout_marginLeft="-30dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"/>
-
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="523dp"
-        android:layout_height="match_parent"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintHorizontal_bias="0.0"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        map:layout_constraintVertical_bias="0.0"
-        tools:context=".MapsActivity">
-    </fragment>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/ilusup"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btn_stnby"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:background="@drawable/bg_buttongray"
-        android:fontFamily="@font/semibold"
-        android:text="Standby"
-        android:textColor="#0e0e0e"
-        android:textAllCaps="false"
-        android:textSize="10dp"
-        android:layout_marginTop="300dp"
-        android:layout_marginLeft="584dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent">
-
-    </Button>
-
-    <Button
-        android:id="@+id/btn_off"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:background="@drawable/bg_buttonred"
-        android:fontFamily="@font/semibold"
-        android:text="OFF"
-        android:textAllCaps="false"
-        android:textSize="10dp"
-        android:textColor="#0e0e0e"
-        android:layout_marginTop="300dp"
-        android:layout_marginLeft="734dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent">
-    </Button>
-
-    <LinearLayout
-        android:layout_width="133dp"
-        android:layout_height="70dp"
-        android:background="#91b6de"
-        android:layout_marginTop="300dp"
-        android:layout_marginLeft="372dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent" />
-
-
-    <TextView
-        android:layout_width="250dp"
-        android:layout_height="150dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="-120dp"
-        android:layout_marginLeft="520dp"
-        android:fontFamily="@font/bolditalic"
-        android:text="25"
-        android:textAlignment="center"
-        android:textColor="#fff"
-        android:textSize="120dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"></TextView>
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="250dp"
-        android:layout_height="30dp"
-        android:layout_marginLeft="520dp"
-        android:layout_marginTop="30dp"
-        android:layout_centerHorizontal="true"
-        android:fontFamily="@font/bolditalic"
-        android:text="km/h"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="15dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"></TextView>
-
-
-    <TextView
-        android:layout_width="100dp"
-        android:layout_height="20dp"
-        android:layout_marginEnd="-370dp"
-        android:layout_marginTop="285dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        android:text="Tagihan"
-        android:textColor="@color/black"
-        android:fontFamily="@font/semibold"
-        android:textSize="13dp">
-    </TextView>
-
-
-    <TextView
-        android:id="@+id/tagihan"
-        android:layout_width="120dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="-390dp"
-        android:layout_marginTop="325dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        android:text="Rp75.000"
-        android:textColor="#082451"
-        android:fontFamily="@font/monserat"
-        android:textSize="18dp">
-    </TextView>
-
-    <TextView
-        android:layout_width="100dp"
-        android:layout_height="20dp"
-        android:layout_marginEnd="-370dp"
-        android:layout_marginTop="-325dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        android:text="Saldo"
-        android:textColor="#fff"
-        android:fontFamily="@font/semibold"
-        android:textSize="13dp">
-    </TextView>
-
-    <TextView
-        android:id="@+id/saldo"
-        android:layout_width="120dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="-390dp"
-        android:layout_marginTop="-285dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        android:text="Rp75.000"
-        android:textColor="#fff"
-        android:fontFamily="@font/monserat"
-        android:textSize="20dp">
-    </TextView>
-
-    <TextView
-        android:id="@+id/baterry"
-        android:layout_width="40dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="-330dp"
-        android:layout_marginTop="150dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        android:text="100"
-        android:textColor="#fff"
-        android:fontFamily="@font/monserat"
-        android:textSize="20dp">
-    </TextView>
-
-    <TextView
-        android:layout_width="120dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="-485dp"
-        android:layout_marginTop="150dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        android:text="%"
-        android:textColor="#fff"
-        android:fontFamily="@font/monserat"
-        android:textSize="20dp">
-    </TextView>
-
-    <TextView
-        android:layout_width="40dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="-505dp"
-        android:layout_marginTop="150dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        android:text="40"
-        android:textColor="#fff"
-        android:fontFamily="@font/monserat"
-        android:textSize="20dp">
-    </TextView>
-
-    <TextView
-        android:layout_width="40dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="-565dp"
-        android:layout_marginTop="150dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        android:text="°C"
-        android:textColor="#fff"
-        android:fontFamily="@font/monserat"
-        android:textSize="20dp">
-    </TextView>
-
-    <TextView
-        android:layout_width="120dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="-420dp"
-        android:layout_marginTop="120dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        android:text="Battery"
-        android:textColor="#fff"
-        android:fontFamily="@font/monserat"
-        android:textSize="10dp">
-    </TextView>
-
-    <TextView
-        android:layout_width="120dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="-610dp"
-        android:layout_marginTop="120dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        android:text="Suhu"
-        android:textColor="#fff"
-        android:fontFamily="@font/monserat"
-        android:textSize="10dp">
-    </TextView>
-
-    <TextView
-        android:layout_width="120dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="-790dp"
-        android:layout_marginTop="120dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        android:text="Jarak"
-        android:textColor="#fff"
-        android:fontFamily="@font/monserat"
-        android:textSize="10dp">
-    </TextView>
-
-    <TextView
-        android:layout_width="40dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="-685dp"
-        android:layout_marginTop="150dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        android:text="40"
-        android:textColor="#fff"
-        android:fontFamily="@font/monserat"
-        android:textSize="20dp">
-
-    </TextView>
-
-    <TextView
-        android:layout_width="40dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="-750dp"
-        android:layout_marginTop="150dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        android:text="m"
-        android:textColor="#fff"
-        android:fontFamily="@font/monserat"
-        android:textSize="20dp">
-
-    </TextView>
-
-    <View
-        android:layout_width="55dp"
-        android:layout_height="2dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="460dp"
-        android:layout_marginTop="285dp"
-        android:background="#fff">
-    </View>
-
-    <View
-        android:id="@+id/view"
-        android:layout_width="250dp"
-        android:layout_height="2dp"
-        android:layout_marginLeft="520dp"
-        android:layout_marginTop="-240dp"
-        android:background="#ea3e3e"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"></View>
+    android:padding="5dp"
+    android:layout_gravity="center"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true">
 
 
     <LinearLayout
-        android:layout_width="90dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="-305dp"
-        android:layout_marginLeft="675dp"
-        android:background="#26a0c5ea"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent">
+        android:id="@+id/linearLayout3"
+        android:layout_width="335dp"
+        android:layout_height="340dp"
+        android:layout_marginTop="-30dp"
+        android:background="@drawable/bg_bluetooth"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal">
 
-        <Chronometer
-            android:id="@+id/simpleChronometer"
-            android:layout_width="90dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginTop="5dp"
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="1000dp"
+        android:layout_height="700dp"
+        android:layout_marginTop="-100dp"
+        android:src="@drawable/popup"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </ImageView>
+
+    <Button
+        android:id="@+id/btn_resume"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:background="@drawable/buttonbiru"
+        android:fontFamily="@font/monserat"
+        android:text="Resume"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="17dp"
+        android:layout_marginTop="-500dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout3"
+        app:layout_constraintVertical_bias="0.935">
+
+    </Button>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/greendown2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.650"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/countdown"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
             android:fontFamily="@font/bolditalic"
-            android:textColor="@color/white"
-            android:textSize="14dp" />
+            android:text="00:00:00"
+            android:textAlignment="center"
+            android:textColor="#fff"
+            android:textSize="30dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayout3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/linearLayout3"
+            app:layout_constraintVertical_bias="0.88">
+        </TextView>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="265dp"
-        android:layout_height="70dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="522dp"
-        android:layout_marginTop="135dp"
-        android:background="#26a0c5ea">
 
-    </LinearLayout>
 
-    <View
-        android:layout_width="2dp"
-        android:layout_height="45dp"
-        android:background="#082451"
-        android:layout_marginLeft="430dp"
-        android:layout_marginTop="135dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent" />
 
-    <View
-        android:layout_width="2dp"
-        android:layout_height="45dp"
-        android:background="#082451"
-        android:layout_marginLeft="610dp"
-        android:layout_marginTop="135dp"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:fontFamily="@font/maven"
+        android:text="Standby Mode"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.335">
+
+    </TextView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

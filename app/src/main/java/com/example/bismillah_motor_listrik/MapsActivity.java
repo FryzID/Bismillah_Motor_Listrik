@@ -41,6 +41,7 @@ import android.os.Message;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
@@ -104,7 +105,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleMap.OnMapClickListener {
 
+
+    BroadcastReceiver batteryBroadcast;
+    IntentFilter intentFilter;
     TextView tv_speed;
+    boolean status_alert;
     String kecepatan_realtime, jarak_realtime, battery_realtime, motor_id;
     TextView tagihan, jarak, kacau;
     String id, crd;
@@ -197,9 +202,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mTxtReceive = (TextView) findViewById(R.id.percobaan);
 
-
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+//        //TODO HP Battery Service
+//        this.registerReceiver(this.mBatInfoReceive, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+
+        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = context.registerReceiver(null, ifilter);
 
         myDialog = new Dialog(this);
 
@@ -223,6 +233,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         battery = (TextView) findViewById(R.id.baterry);
 
+        status_alert = false;
+
 //        Credit
         tagihan = findViewById(R.id.tagihan);
         jarak = findViewById(R.id.jarak);
@@ -230,16 +242,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Bundle extras = getIntent().getExtras();
         id = extras.getString(KEY_NAME);
 
-        try {
+//        try {
             key_device = extras.getString(key_device);
             key_mDevice = extras.getString(key_mDevice);
             key_mBuffer = extras.getString(key_mBuffer);
             saldo = findViewById(R.id.saldo);
-        } catch (Exception e) {
-            motorOff();
-            Off();
-            habis();
-        }
+//        } catch (Exception e) {
+//            motorOff();
+//            Off();
+//            habis();
+//        }
 
         saldo.setText(key_device);
 //      definisikan nilai
@@ -261,12 +273,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         timerText = findViewById(R.id.timerText);
         timer = new Timer();
         startTimer();
-//        end count up time
-
-//        java.util.Date noteTS = Calendar.getInstance().getTime();
-//
-//        String time = "hh:mm%"; // 12:00
-//        battery.setText(DateFormat.format(time, noteTS));
 
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -296,6 +302,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 timerTask.cancel();
                 // create a Dialog component
                 final Dialog dialog = new Dialog(context);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
                 //tell the Dialog to use the dialog.xml as it's layout description
                 dialog.setContentView(R.layout.activity_standbypopupp);
@@ -303,7 +310,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 dialog.setCancelable(false);
 
                 Standby();
-                motorOff();
+                motorStnBy();
                 TextView ada = (TextView) dialog.findViewById(R.id.countdown);
 //                TextView txt = (TextView) dialog.findViewById(R.id.txt);
                 new CountDownTimer(300000, 1000) {
@@ -320,9 +327,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     public void onFinish() {
                         ada.setText("done!");
+                        motorOff();
                         Off();
-                        Intent i = new Intent(MapsActivity.this, MainActivity.class);
-                        startActivity(i);
+                        habis();
                         return;
                     }
                 }.start();
@@ -360,21 +367,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        BatteryTrigger();
 
 
-        //TODO HP Battery Service
 
-        this.registerReceiver(this.mBatInfoReceive, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
 
         textViewTime = (TextView)findViewById(R.id.countdown);
 
         tv_speed = findViewById(R.id.tv_speed);
+
+        intentFilterAndBroadcast();
+    }
+
+    private void intentFilterAndBroadcast() {
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+        batteryBroadcast = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+//                if (Intent.ACTION_BATTERY_CHANGED.equals(intent.getAction())) {
+//
+//                    Integer lvl = Integer.valueOf(intent.getIntExtra("level", 0 ));
+//                    if (lvl <= 50){
+//                        chargePhone();
+//                    } else if (lvl == 100){
+//                        chargeDone();
+//                    }
+//                }
+            }
+        };
+
     }
 
 
     private void Standby() {
         handler1.removeCallbacks(runnable1);
 
-        onStop();
+//        onStop()
     }
 
 
@@ -390,8 +418,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void Off() {
-        handler1.removeCallbacks(runnable1);
-        handler3.removeCallbacks(runnable3);
+//        handler1.removeCallbacks(runnable1);
+//        handler3.removeCallbacks(runnable3);
 //        handler_alert.removeCallbacks(runnable_alert);
 //        handler_alert2.removeCallbacks(runnable_alert2);
         onStop();
@@ -399,6 +427,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         timerTask.cancel();
         times = 0.0;
         timerText.setText(formatTime(0,0,0));
+
+        unregisterReceiver(batteryBroadcast);
+
+        //TODO REMOVING INTENT
+        getIntent().removeExtra("mDevice");
+        getIntent().removeExtra("mDeviceUUID");
+        getIntent().removeExtra("mMaxChars");
+        getIntent().removeExtra("id");
+
+        getIntent().replaceExtras(new Bundle());
+        getIntent().setAction("");
+        getIntent().setData(null);
+        getIntent().setFlags(0);
+
 //        Chronometer simpleChronometer = (Chronometer) findViewById(R.id.simpleChronometer); // initiate a chronometer
 //
 //        simpleChronometer.start(); // start a chronometer
@@ -430,28 +472,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (!response.isSuccessful()) {
                     return;
                 }
-                Toast.makeText(MapsActivity.this, "Berhasil", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MapsActivity.this, "Berhasil Put", Toast.LENGTH_SHORT).show();
 
             }
 
             @Override
             public void onFailure(Call<Respon> call, Throwable t) {
-                Toast.makeText(MapsActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(MapsActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 
     }
 
     private void habis() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent i = new Intent(MapsActivity.this, Off.class);
-                i.putExtra("billing_off", tagihan.getText().toString());
-                i.putExtra("jarak_off", jarak.getText().toString());
-                startActivity(i);
-            }
-        }, 2000);
+        Intent i = new Intent(MapsActivity.this, Off.class);
+        i.putExtra("billing_off", tagihan.getText().toString());
+        i.putExtra("jarak_off", jarak.getText().toString());
+        startActivity(i);
     }
 
     private void setCredit() {
@@ -459,31 +496,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         runnable1 = new Runnable() {
             public void run() {
                 try {
+                    if(tagihan.getText().toString() == "") {
+                        credit();
+                    }
                     String jarak1 = jarak.getText().toString();
-                    Toast.makeText(MapsActivity.this, jarak_realtime, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MapsActivity.this, jarak_realtime, Toast.LENGTH_SHORT).show();
                     int nl = Integer.parseInt(jarak1);
-                    nilai = (nl / 10) * 1000;
+                    nilai = (nl / 10) * 250;
                     int trans = Integer.parseInt(crd);
                     tampil = trans - nilai;
+                    if (tampil <= 0) {
+                        Toast.makeText(MapsActivity.this, "Billing Telah Habis", Toast.LENGTH_SHORT).show();
+                        motorOff();
+                        Off();
+                        habis();
+                        return;
+                    }
                     if (tampil <= 10000) {
                         Toast.makeText(MapsActivity.this, "Billing Tersisa 10.0000", Toast.LENGTH_SHORT).show();
                     }
 
                     tagihan.setText(tampil.toString());
-                    if (tampil <= 0) {
-                        Toast.makeText(MapsActivity.this, "Billing Telah Habis", Toast.LENGTH_SHORT).show();
-                        habis();
-                        return;
-                    }
+
                     setCredit();
                 }catch (Exception e) {
-                    Toast.makeText(MapsActivity.this, "gagal", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MapsActivity.this, "gagal", Toast.LENGTH_SHORT).show();
                     setCredit();
                 }
 
             }
         };
-        handler1.postDelayed(runnable1, 15000);
+        handler1.postDelayed(runnable1, 5000); // 15000 detik sebelumnya
 
 //        stop_Standby.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -542,12 +585,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     return;
                 }
                 tagihan.setText(response.body().getData().getCredit().toString());
+                TextView saldo = (TextView) findViewById(R.id.saldo);
+                saldo.setText(response.body().getData().getCredit().toString());
+                crd = tagihan.getText().toString();
+                int trans = Integer.parseInt(crd);
+                Integer pajak = trans - 1000;
+                tagihan.setText(pajak.toString());
                 crd = tagihan.getText().toString();
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(MapsActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(MapsActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -701,23 +750,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
 //        mMap.animateCamera(cameraUpdate);
 
-        try {
-            List<Address> addresses = geocoder.getFromLocationName("abc.xyz", 1);
-            if (addresses.size() > 0) {
-                Address address = addresses.get(0);
-                LatLng london = new LatLng(address.getLatitude(), address.getLongitude());
-
-                MarkerOptions markerOptions = new MarkerOptions()
-                        .position(new LatLng(address.getLatitude(), address.getLongitude()))
-                        .title(address.getLocality());
-                mMap.addMarker(markerOptions);
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(london, 16));
-
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            List<Address> addresses = geocoder.getFromLocationName("abc.xyz", 1);
+//            if (addresses.size() > 0) {
+//                Address address = addresses.get(0);
+//                LatLng london = new LatLng(address.getLatitude(), address.getLongitude());
+//
+//                MarkerOptions markerOptions = new MarkerOptions()
+//                        .position(new LatLng(address.getLatitude(), address.getLongitude()))
+//                        .title(address.getLocality());
+//                mMap.addMarker(markerOptions);
+//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(london, 16));
+//
+//            }
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     LocationCallback locationCallback = new LocationCallback() {
@@ -745,7 +794,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                BatteryTrigger();
             }
         };
-        handler3.postDelayed(runnable3, 15000);
+        handler3.postDelayed(runnable3, 2500);
         btn_off.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -763,7 +812,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         motorOff();
                         Off();
                         habis();
-//                        startActivity(new Intent(getApplicationContext(), Off.class));
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -861,27 +909,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onResponse(Call<PostMotor> call, Response<PostMotor> response) {
 //                try {
                     if (!response.isSuccessful()) {
+//                        Toast.makeText(MapsActivity.this, "Not Succes", Toast.LENGTH_SHORT).show();
+//                        motorOff();
+//                        Off();
+//                        habis();
+                        return;
+                    }
+
+//                    Toast.makeText(MapsActivity.this, "Berhasil Realtime", Toast.LENGTH_SHORT).show();
+
+                    String rg = response.body().getRange().toString();
+//                    String btr11 = response.body().getBattery().toString();
+                    int trans = Integer.parseInt(rg);
+//                    int btr1 = Integer.parseInt(btr11);
+
+                    if (response.body().getOff() != null) {
                         motorOff();
                         Off();
                         habis();
                         return;
                     }
-                    Toast.makeText(MapsActivity.this, "Berhasil", Toast.LENGTH_SHORT).show();
-
-//                    String rg = response.body().getRange().toString();
-//                    String btr = response.body().getBattery().toString();
-//                    String id_off = response.body().getOff().toString();
-//                    int trans = Integer.parseInt(rg);
-//                    int btr1 = Integer.parseInt(btr);
-//                    int off1 = Integer.parseInt(id_off);
-
-//                    if (off1 == 1) {
-//                        motorOff();
-//                        Off();
-//                        habis();
-//                        return;
-//                    }
-
+//
 //                    if (btr1 == 2) {
 //                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(MapsActivity.this);
 //
@@ -916,11 +964,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                    }
 //
 //                    if(trans == 1) {
-//                        alert();
 //                        alert2();
 //                    } else {
-//                        handler_alert.removeCallbacks(runnable_alert);
-//                        handler_alert2.removeCallbacks(runnable_alert2);
+//
+//                        if(status_alert == true) {
+//                            handler_alert.removeCallbacks(runnable_alert);
+//                            handler_alert2.removeCallbacks(runnable_alert2);
+//                            status_alert = false;
+//                        } else {
+//
+//                        }
+//
 //                    }
 //                } catch (Exception e) {
 //                    Toast.makeText(MapsActivity.this, "gagal realtime", Toast.LENGTH_SHORT).show();
@@ -931,7 +985,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onFailure(Call<PostMotor> call, Throwable t) {
-                Toast.makeText(MapsActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MapsActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -949,6 +1003,8 @@ private void  alert2() {
 }
 
     private void alert() {
+        status_alert = true;
+
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(MapsActivity.this);
 
         builder.setCancelable(true);
@@ -958,10 +1014,16 @@ private void  alert2() {
         handler_alert = new Handler();
         runnable_alert = new Runnable() {
             public void run() {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+
+                motorOff();
+                Off();
+                handler_alert.removeCallbacks(runnable_alert);
+                handler_alert2.removeCallbacks(runnable_alert2);
+                habis();
+                return;
             }
         };
-        handler_alert.postDelayed(runnable_alert, 20000);
+        handler_alert.postDelayed(runnable_alert, 5000);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -985,7 +1047,7 @@ private void  alert2() {
             markerOptions.rotation(location.getBearing());
             markerOptions.anchor((float) 0.5, (float) 0.5);
             userLocationMarker = mMap.addMarker(markerOptions);
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
 //            speed = (int) (location.getSpeed() * 18 / 5);
 //            TextView tv = (TextView) findViewById(R.id.tv_speed);
 //            tv.setText((int) speed);
@@ -993,7 +1055,7 @@ private void  alert2() {
             //Use Previously created Marker
             userLocationMarker.setPosition(latLng);
             userLocationMarker.setRotation(location.getBearing());
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
         }
 
         if (userLocationAccuracyCircle == null) {
@@ -1025,6 +1087,7 @@ private void  alert2() {
     @Override
     protected void onStart() {
         super.onStart();
+        registerReceiver(batteryBroadcast, intentFilter);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager
                 .PERMISSION_GRANTED) {
             startLocationUpdates();
@@ -1038,6 +1101,10 @@ private void  alert2() {
         Log.d(TAG, "Stopped");
         super.onStop();
         stopLocationUpdates();
+        handler1.removeCallbacks(runnable1);
+        handler3.removeCallbacks(runnable3);
+        motorOff();
+
     }
 
     @SuppressLint("MissingPermission")
@@ -1051,7 +1118,7 @@ private void  alert2() {
             @Override
             public void onSuccess(Location location) {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
 //                mMap.addMarker(new MarkerOptions().position(latLng));
             }
         });
@@ -1251,31 +1318,31 @@ private void  alert2() {
         }
     }
 
-    private BroadcastReceiver mBatInfoReceive = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-
-//            TextView battery = (TextView) findViewById(R.id.baterry);
-            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-
-            String str = new String(String.valueOf(level));
-
-            int batu = Integer.parseInt(str);
-//            battery.setText(str);
-
-            if (batu <= 50) {
-                chargePhone();
-            }
-
-            if (batu == 100) {
-
-                chargeDone();
-            }
-
-
-        }
-    };
+//    private BroadcastReceiver mBatInfoReceive = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//
+//
+////            TextView battery = (TextView) findViewById(R.id.baterry);
+//            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+//
+//            String str = new String(String.valueOf(level));
+//
+//            int batu = Integer.parseInt(str);
+////            battery.setText(str);
+//
+//            if (batu <= 50) {
+//                chargePhone();
+//            }
+//
+//            if (batu == 100) {
+//
+//                chargeDone();
+//            }
+//
+//
+//        }
+//    };
 
     public void chargePhone(){
 
@@ -1371,8 +1438,7 @@ private void  alert2() {
 //        System.out.println(finalString);
 
     }
-
-    private void motorOff() {
+    private void motorStnBy() {
 
         ByteArrayOutputStream stream
                 = new ByteArrayOutputStream();
@@ -1389,6 +1455,27 @@ private void  alert2() {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    private void motorOff() {
+
+        ByteArrayOutputStream stream
+                = new ByteArrayOutputStream();
+
+        // Initializing string
+//        String st = "0";
+
+        // writing the specified byte to the output stream
+        try {
+            String sendtxt = "8";
+            mBTSocket.getOutputStream().write(sendtxt.getBytes());
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
 
         // converting stream to byte array
         // and typecasting into string
@@ -1399,6 +1486,8 @@ private void  alert2() {
 //        System.out.println(finalString);
 
     }
+
+
 
     private class ConnectBT extends AsyncTask<Void, Void, Void> {
         private boolean mConnectSuccessful = true;
@@ -1468,62 +1557,63 @@ private void  alert2() {
 
         @Override
         public void run() {
-            InputStream inputStream;
+                    InputStream inputStream;
 
-            try {
-                inputStream = mBTSocket.getInputStream();
+                    try {
+                        inputStream = mBTSocket.getInputStream();
 
 //                int jarak;
-                while (!bStop) {
-                    byte[] buffer = new byte[1024];
-                    if (inputStream.available() > 0) {
-                        inputStream.read(buffer);
-                        int i = 0;
-                        String dataRead= new String(buffer,"UTF-8");
+                        while (!bStop) {
+                            byte[] buffer = new byte[2048];
+                            if (inputStream.available() > 0) {
+                                inputStream.read(buffer);
+                                int i = 0;
+                                String dataRead= new String(buffer,"UTF-8");
 
-                        StringTokenizer tokens = new StringTokenizer(dataRead, " ;");
-                        tokens.countTokens();
-                        String first = tokens.nextToken();      // this will contain Kecepatan
-                        String second = tokens.nextToken();     // this will contain Jarak
-                        String third = tokens.nextToken();      // this will contain Battery
-                        String fourth = tokens.nextToken();      // this will contain Suhu
-                        String five = tokens.nextToken();      // this will contain ID MOTOR
+                                StringTokenizer tokens = new StringTokenizer(dataRead, ";");
+                                tokens.countTokens();
+                                String first = tokens.nextToken();      // this will contain ID MOTOR
+                                String second = tokens.nextToken();     // this will contain Kecepatan
+                                String third = tokens.nextToken();      // this will contain Jarak
+                                String fourth = tokens.nextToken();      // this will contain Battery
+                                String five = tokens.nextToken();      // this will contain Suhu
 
-                        kecepatan_realtime = String.valueOf(first);
-                        jarak_realtime = String.valueOf(second);
-                        battery_realtime = String.valueOf(third);
-                        String separatebytes4 = String.valueOf(fourth);
-                        motor_id = String.valueOf(five);
+                                motor_id = String.valueOf(first);
+                                kecepatan_realtime = String.valueOf(second);
+                                jarak_realtime = String.valueOf(third);
+                                battery_realtime = String.valueOf(fourth);
+                                String suhu2 = String.valueOf(five);
 
-                        TextView speed = (TextView) findViewById(R.id.tv_speed);
-                        TextView jarak = (TextView) findViewById(R.id.jarak);
-                        TextView battery = (TextView) findViewById(R.id.baterry);
-                        TextView suhu = (TextView) findViewById(R.id.suhu);
-                        System.err.println(dataRead);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                //This code needs to be posted back to the main thread.
-                                speed.setText(kecepatan_realtime);
-                                jarak.setText(jarak_realtime);
-                                battery.setText(battery_realtime);
-                                suhu.setText(separatebytes4);
+                                TextView speed = (TextView) findViewById(R.id.tv_speed);
+                                TextView jarak = (TextView) findViewById(R.id.jarak);
+                                TextView battery = (TextView) findViewById(R.id.baterry);
+                                TextView suhu = (TextView) findViewById(R.id.suhu);
+                                System.err.println(dataRead);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //This code needs to be posted back to the main thread.
+                                        speed.setText(kecepatan_realtime);
+                                        jarak.setText(jarak_realtime);
+                                        battery.setText(battery_realtime);
+                                        suhu.setText(suhu2);
+
+
+                                    }
+                                });
 
 
                             }
-                        });
-
-
+                            Thread.sleep(1000);
+                        }
+                    } catch (IOException e) {
+// TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+// TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
-                    Thread.sleep(1000);
-                }
-            } catch (IOException e) {
-// TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-// TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+
 
         }
 
@@ -1652,6 +1742,11 @@ private void  alert2() {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    @Override
+    public void onBackPressed () {
 
     }
 }

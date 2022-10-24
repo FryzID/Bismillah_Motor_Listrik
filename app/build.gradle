@@ -41,8 +41,9 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
 
-    implementation 'com.google.android.gms:play-services-location:20.0.0'
-    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'com.google.android.gms:play-services-location:21.0.0'
+    implementation 'com.google.android.gms:play-services-maps:18.0.0' //TODO Jika Preentasi Maps tidak ke Inflate Ganti Versi ke 18.1.0
+                                                                    //TODO Jika Versi sudah 18.1.0 tidak ke inflate ganti ke 18.0.0
 
     //    retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

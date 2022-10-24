@@ -16,6 +16,7 @@
 
     <uses-feature android:name="android.hardware.location.gps"/>
     <application
+        android:screenOrientation="locked"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -30,10 +31,12 @@
 
         <activity
             android:name=".tester"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".Off"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".standbypopupp"
             android:exported="false"

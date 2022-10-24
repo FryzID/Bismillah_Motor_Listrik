@@ -18,7 +18,7 @@ import retrofit2.http.Path;
 
 public interface InterfaceAPI {
 
-    String BASE_URL = "https://9595-36-91-58-207.ngrok.io/";
+    String BASE_URL = "https://etho.wiliscode.com/";
 
     @POST("api/login")
     @FormUrlEncoded

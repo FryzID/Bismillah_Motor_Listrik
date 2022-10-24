@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -136,7 +137,7 @@ public class Scanner extends AppCompatActivity {
 //        key_mDevice = extras.getString(key_mDevice);
 //        key_mBuffer = extras.getString(key_mBuffer);
 
-//        codeScanner.setCamera(1);
+        codeScanner.setCamera(1);
 
         decorView = getWindow() .getDecorView();
         decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
@@ -168,6 +169,7 @@ public class Scanner extends AppCompatActivity {
 //        mMaxChars = b.getInt(BluetoothFragment.BUFFER_SIZE);
 
         Log.d(TAG, "Ready");
+
 
     }
 
@@ -223,24 +225,33 @@ public class Scanner extends AppCompatActivity {
                     return;
                 }
 
-                motorOn();
-                id = response.body().getId();
-                if (response.body().getSuccess() != null){
-                    loading.cancel();
-                    BluetoothDevice device = (mDevice);
-//                    Intent intent = new Intent(getApplicationContext(), Scanner.class);
-                    Intent i = new Intent(Scanner.this, MapsActivity.class);
-                    i.putExtra(DEVICE_EXTRA, device);
-                    i.putExtra(DEVICE_UUID, mDeviceUUID.toString());
-                    i.putExtra(BUFFER_SIZE, mBufferSize);
+//                if (response.body().getSaldo() != null) {
+//                    loading.cancel();
+//                    alert1();
+//                }
 
-                    i.putExtra(KEY_NAME, id);
+                else {
+                    motorOn();
+                    id = response.body().getId();
+                    if (response.body().getSuccess() != null){
+                        loading.cancel();
+                        BluetoothDevice device = (mDevice);
+//                    Intent intent = new Intent(getApplicationContext(), Scanner.class);
+                        Intent i = new Intent(Scanner.this, MapsActivity.class);
+                        i.putExtra(DEVICE_EXTRA, device);
+                        i.putExtra(DEVICE_UUID, mDeviceUUID.toString());
+                        i.putExtra(BUFFER_SIZE, mBufferSize);
+
+                        i.putExtra(KEY_NAME, id);
 //                    i.putExtra(key_device, key_device);
 //                    i.putExtra(key_mDevice, key_mDevice);
 //                    i.putExtra(key_mBuffer, key_mBuffer);
 
 //                    startActivity(intent);
-                    startActivity(i);
+                        startActivity(i);
+                    } else {
+                        return;
+                    }
                 }
             }
 
@@ -250,6 +261,24 @@ public class Scanner extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void alert1() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(Scanner.this);
+
+        builder.setCancelable(true);
+        builder.setTitle("Peringatan");
+        builder.setMessage("Saldo Anda Kosong, Mohon Isi Ulang");
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent a = new Intent(Scanner.this, MainActivity.class);
+                startActivity(a);
+            }
+        });
+
+        builder.show();
     }
 
     @Override
@@ -323,7 +352,8 @@ public class Scanner extends AppCompatActivity {
                 mReadThread = new ReadInput(); // Kick off input reader
             }
 
-            progressDialog.dismiss();
+            progressDialog.
+                    dismiss();
         }
 
     }
@@ -496,7 +526,29 @@ public class Scanner extends AppCompatActivity {
 
     }
 
+    private void motorOff() {
 
+        ByteArrayOutputStream stream
+                = new ByteArrayOutputStream();
+
+        // Initializing string
+//        String st = "0";
+
+        // writing the specified byte to the output stream
+        try {
+            String sendtxt = "0";
+            mBTSocket.getOutputStream().write(sendtxt.getBytes());
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onBackPressed () {
+
+    }
 
 
 

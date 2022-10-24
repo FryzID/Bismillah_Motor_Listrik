@@ -9,13 +9,15 @@
     <ImageView
         android:layout_width="900dp"
         android:layout_height="500dp"
-        android:src="@drawable/ilusmap"
-        android:layout_marginTop="-5dp"
         android:layout_marginLeft="-20dp"
+        android:layout_marginTop="-5dp"
+        android:src="@drawable/ilusmap"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintHorizontal_bias="0.693"
         map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"/>
+        map:layout_constraintTop_toTopOf="parent"
+        map:layout_constraintVertical_bias="0.754" />
 
     <fragment
         android:id="@+id/map"
@@ -144,7 +146,7 @@
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent"
-        android:text="Tagihan"
+        android:text="Sisa Saldo"
         android:textColor="@color/black"
         android:fontFamily="@font/semibold"
         android:textSize="13dp">
@@ -161,7 +163,7 @@
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent"
-        android:text="Rp75.000"
+        android:text=""
         android:textColor="#082451"
         android:fontFamily="@font/monserat"
         android:textSize="18dp">
@@ -192,8 +194,8 @@
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent"
-        android:text="Rp75.000"
-        android:textColor="#fff"
+        android:text=""
+        android:textColor="@color/black"
         android:fontFamily="@font/monserat"
         android:textSize="20dp">
     </TextView>
@@ -208,7 +210,7 @@
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent"
-        android:text="100"
+        android:text="0"
         android:textColor="#fff"
         android:fontFamily="@font/monserat"
         android:textSize="20dp">
@@ -239,7 +241,7 @@
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent"
-        android:text="40"
+        android:text="0"
         android:textColor="#fff"
         android:fontFamily="@font/monserat"
         android:textSize="20dp">
@@ -309,13 +311,13 @@
         android:id="@+id/jarak"
         android:layout_width="40dp"
         android:layout_height=    "30dp"
-        android:layout_marginEnd="-685dp"
+        android:layout_marginEnd="-665dp"
         android:layout_marginTop="150dp"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent"
-        android:text="40"
+        android:text="0"
         android:textColor="#fff"
         android:fontFamily="@font/monserat"
         android:textSize="20dp">
@@ -382,7 +384,7 @@
             android:layout_marginTop="5dp"
             android:text="00:00:00"
             android:fontFamily="@font/bolditalic"
-            android:textColor="@color/black"
+            android:textColor="#fff"
             android:textSize="14dp" />
 
     </LinearLayout>
